@@ -87,6 +87,7 @@ export function initSlider() {
 
     function update(h) {
         handle.attr('cx', x(h));
+        console.log('handle1: ' + x.invert(handle.attr('cx')) + 'handle2: ' + x.invert(handle2.attr('cx')));
         if (h < x.invert(handle2.attr('cx'))) {
             handle2.attr('cx', x(h));
         }
@@ -94,6 +95,7 @@ export function initSlider() {
 
     function update2(h) {
         handle2.attr('cx', x(h));
+        console.log('handle1: ' + x.invert(handle.attr('cx')) + 'handle2: ' + x.invert(handle2.attr('cx')));
         if (h > x.invert(handle.attr('cx'))) {
             handle.attr('cx', x(h));
         }
