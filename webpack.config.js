@@ -1,4 +1,5 @@
 const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
     resolve: {
@@ -12,39 +13,49 @@ module.exports = {
             "https": false,
             "stream": false,
             "crypto": false,
-            "crypto-browserify": require.resolve('crypto-browserify'), //if you want to use this module also don't forget npm i crypto-browserify
+            "crypto-browserify": require.resolve('crypto-browserify'),
         }
     },
-    entry: './src/index.js', // Entry point for your app
+    entry: './src/index.js',
     output: {
-        path: path.resolve(__dirname, 'dist'), // Output directory
-        filename: 'bundle.js', // Output file
+        path: path.resolve(__dirname, 'dist'),
+        filename: 'bundle.js',
     },
-    mode: 'development', // Can be 'development' or 'production'
+    mode: 'development',
     module: {
         rules: [
             {
-                test: /\.css$/, // For processing CSS files
+                test: /\.css$/,
                 use: ['style-loader', 'css-loader'],
             },
             {
-                test: /\.m?js$/, // For processing JavaScript files
-                exclude: /node_modules/, // Exclude node_modules directory
+                test: /\.m?js$/,
+                exclude: /node_modules/,
                 use: {
-                    loader: 'babel-loader', // Use Babel to transpile JS
+                    loader: 'babel-loader',
                     options: {
-                        presets: ['@babel/preset-env'], // Babel preset for ES6+
+                        presets: ['@babel/preset-env'],
                     },
                 },
             },
             {
-                test: /\.(png|svg|jpg|jpeg|gif)$/, // For handling images
+                test: /\.(png|svg|jpg|jpeg|gif)$/,
                 type: 'asset/resource',
             },
         ],
     },
+    plugins: [
+        new HtmlWebpackPlugin({
+            template: './src/index.html',
+            filename: 'index.html',
+        }),
+        new HtmlWebpackPlugin({
+            template: './src/node.html',
+            filename: 'node.html',
+        }),
+    ],
     devServer: {
-        static: './dist', // Serve content from the 'dist' directory
-        open: true, // Automatically open the browser
+        static: './dist',
+        open: true,
     },
 };
