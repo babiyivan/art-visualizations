@@ -1,3 +1,4 @@
+// filepath: /c:/Users/ahmed/Desktop/ArtVis-main/dist/network.js
 async function createNetwork() {
     try {
         // Initial setup
@@ -37,7 +38,7 @@ async function createNetwork() {
                     birthdate: d.a_birthdate,
                     venues: new Set(),
                     connections: new Set(),
-                    exhibitions: new Set()
+                    exhibitions: new Set() // Set to store exhibitions
                 });
             }
             const artist = artistsMap.get(d.a_id);
@@ -158,7 +159,7 @@ async function createNetwork() {
                     name: artist.name,
                     nationality: artist.nationality,
                     birthdate: artist.birthdate,
-                    exhibitions: artist.exhibitions.size
+                    exhibitions: artist.exhibitions.size // Store the count instead of the Set
                 });
 
                 artist.connections.forEach(connectedId => {
@@ -229,7 +230,7 @@ async function createNetwork() {
                         .attr("r", d => 5 + Math.sqrt(d.exhibitions))
                         .attr("fill", d => nationalityColor(d.nationality))
                         .attr("class", "node")
-                        .attr("tabindex", 0) 
+                        .attr("tabindex", 0) // Make focusable
                         .attr("aria-label", d => `Artist: ${d.name}, Nationality: ${d.nationality}, Exhibitions: ${d.exhibitions}`)
                         .on("click", (event, d) => {
                             expandNetwork(d.id);
@@ -242,6 +243,12 @@ async function createNetwork() {
                             showTooltip(event, d);
                         })
                         .on("mouseout", hideTooltip)
+                        .on("keydown", (event, d) => { // Added keyboard interaction
+                            if (event.key === "Enter" || event.key === " ") {
+                                expandNetwork(d.id);
+                                showArtistInfo(event, d);
+                            }
+                        })
                         .call(drag),
                     update => update,
                     exit => exit.remove()
@@ -313,13 +320,7 @@ async function createNetwork() {
                         .attr("y", d => d.y + 3);
                 });
 
-            // Accessibility: Keyboard navigation
-            node.on("keydown", (event, d) => {
-                if (event.key === "Enter" || event.key === " ") {
-                    expandNetwork(d.id);
-                    showArtistInfo(event, d);
-                }
-            });
+            // Accessibility: Keyboard navigation already handled in node selection above
 
             // Clean up tooltip on exit
             nodesGroup.selectAll("circle").on("remove", hideTooltip);
@@ -334,7 +335,7 @@ async function createNetwork() {
                         <h4>${d.name}</h4>
                         <p>Nationality: ${d.nationality}</p>
                         <p>Birth: ${d.birthdate}</p>
-                        <h5>Exhibitions (${artist.exhibitions}):</h5>
+                        <h5>Exhibitions (${artist.exhibitions.size}):</h5> <!-- Changed from artist.exhibitions to artist.exhibitions.size -->
                         <ul>
                             ${Array.from(artist.exhibitions)
                                 .map(e => `<li>${e.title} (${e.year}) at ${e.venue}</li>`)
@@ -367,7 +368,7 @@ async function createNetwork() {
             .scaleExtent([0.3, 10])
             .on("zoom", (event) => g.attr("transform", event.transform));
         svg.call(zoom)
-           .on("dblclick.zoom", null); 
+            .on("dblclick.zoom", null); // Disable double-click zoom if undesired
 
         // Initialize the network based on default filters
         setupFilters();
@@ -387,12 +388,14 @@ async function createNetwork() {
             const newHeight = window.innerHeight * 1;
 
             svg.attr("viewBox", [0, 0, newWidth, newHeight])
-               .attr("width", "100%")
-               .attr("height", "100%");
+                .attr("width", "100%")
+                .attr("height", "100%");
 
             simulation.force("center", d3.forceCenter(newWidth / 2, newHeight / 2));
             simulation.alpha(0.3).restart();
         }, 200));
+
+        // Accessibility Enhancements
         // Ensure high contrast for nodes and links
         d3.selectAll(".node")
             .attr("stroke", "#ffffff")
@@ -400,7 +403,7 @@ async function createNetwork() {
 
         // Ensure tooltips are accessible
         svg.attr("aria-label", "Art Exhibition Network Visualization")
-           .attr("role", "img");
+            .attr("role", "img");
 
     } catch (error) {
         console.error("Error:", error);
