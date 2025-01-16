@@ -1,6 +1,8 @@
 import * as d3 from "d3";
 import * as data from "./data";
+import * as exhList from "./list";
 import * as map from "./map";
+
 import {updateTimeInterval} from "./data";
 
 var margin = {top: 20, right: 20, bottom: 30, left: 40},
@@ -19,7 +21,12 @@ var slider = d3.select('.slider-container')
     .append('g')
     .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
+let sliderStart = 0, sliderEnd = 100;
+
 export function initSlider(start, end) {
+
+    sliderStart = start;
+    sliderEnd = end;
 
     x = d3.scaleLinear()
         .domain([start, end])
@@ -75,12 +82,16 @@ export function initSlider(start, end) {
                 handleStart.interrupt();
             })
             .on('drag', function (event) {
-                update2(x.invert(event.x));
+                updateStart(x.invert(event.x));
                 connectingLine.attr('x1', handleStart.attr('cx'))
                     .attr('x2', handleEnd.attr('cx'));
-            })
-            .on('end', function () {
-                map.updateData(data.updateTimeInterval(x.invert(handleStart.attr('cx')), x.invert(handleEnd.attr('cx'))));
+            // })
+            // .on('end', function () {
+                let updateData = data.updateTimeInterval(x.invert(handleStart.attr('cx')), x.invert(handleEnd.attr('cx')));
+                if (updateData !== null) {
+                    map.updateData(updateData);
+                    exhList.updateList([x.invert(handleStart.attr('cx')), x.invert(handleEnd.attr('cx'))]);
+                }
             }));
 
     var handleEnd = slider.append('circle', '.track-overlay')
@@ -100,12 +111,16 @@ export function initSlider(start, end) {
                 handleEnd.interrupt();
             })
             .on('drag', function (event) {
-                update(x.invert(event.x));
+                updateEnd(x.invert(event.x));
                 connectingLine.attr('x1', handleStart.attr('cx'))
                     .attr('x2', handleEnd.attr('cx'));
-            })
-            .on('end', function () {
-                map.updateData(data.updateTimeInterval(x.invert(handleStart.attr('cx')), x.invert(handleEnd.attr('cx'))));
+                // })
+                // .on('end', function () {
+                let updateData = data.updateTimeInterval(x.invert(handleStart.attr('cx')), x.invert(handleEnd.attr('cx')));
+                if (updateData !== null) {
+                    map.updateData(updateData);
+                    exhList.updateList([x.invert(handleStart.attr('cx')), x.invert(handleEnd.attr('cx'))]);
+                }
             }));
 
 
@@ -117,6 +132,8 @@ export function initSlider(start, end) {
         .style('text-anchor', 'middle')
         .style('background-color', '#d3d3d3')
         .text(x.invert(handleStart.attr('cx')));
+
+
     var handleTextEnd = slider.append('text')
         .attr('class', 'handle-text')
         .attr('x', x(end))
@@ -125,24 +142,25 @@ export function initSlider(start, end) {
         .style('background-color', '#d83939')
         .text(x.invert(handleEnd.attr('cx')));
 
-    // function updateLine(h1, h2) {
-    //     connectingLine.attr('x1', x(h1))
-    //         .attr('x2', x(h2));
-    //     update2(h1);
-    //     update(h2);
-    // }
 
-    function update(h) {
+    function updateEnd(h) {
+
+        sliderEnd =  Math.round(x.invert(handleEnd.attr('cx')));
+
         handleEnd.attr('cx', x(h));
         handleTextEnd.attr('x', x(h))
             .text(Math.round(x.invert(handleEnd.attr('cx'))));
+
         if (h < x.invert(handleStart.attr('cx'))) {
             handleStart.attr('cx', x(h));
             handleTextStart.attr('x', x(h))
         }
     }
 
-    function update2(h) {
+    function updateStart(h) {
+
+        sliderStart = Math.round(x.invert(handleStart.attr('cx')));
+
         handleStart.attr('cx', x(h));
         handleTextStart.attr('x', x(h))
             .text(Math.round(x.invert(handleStart.attr('cx'))));
@@ -154,3 +172,8 @@ export function initSlider(start, end) {
 
     }
 }
+
+export function getSliderValues() {
+    return [sliderStart, sliderEnd];
+}
+

@@ -1,5 +1,15 @@
 async function createNetwork() {
     try {
+        //SET THIS TO TRUE TO RUN LOCALLY
+        const local = false;
+
+        // Data URLs
+        const localurl = 'http://localhost:8081/src/data/';
+        const gisturl = 'https://gist.githubusercontent.com/slelo/3a188911e0eef4ad54fb96a7aa670aa4/raw/5ce10e9f2ceb9ede5b3416b2ff181bc0962d2463/';
+        const filename = 'artvis_dump_NEW.csv';
+        const url = local ? localurl + filename : gisturl + filename;
+        console.log('fetching from ' + url);
+
         // Initial setup
         const container = document.getElementById("network-container");
         container.innerHTML = '<div class="alert alert-info">Loading visualization...</div>';
@@ -14,7 +24,7 @@ async function createNetwork() {
         let nationalityFilter;
 
         // Load data
-        let allData = await d3.csv("http://localhost:8081/src/data/artvis_dump_NEW.csv");
+        let allData = await d3.csv(url);
         const artistsMap = new Map();
         const venueMap = new Map();
 

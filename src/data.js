@@ -17,14 +17,29 @@ export function minYear(csvData) {
     });
 }
 
-export function updateTimeInterval(start, end)    {
+let lastStart, lastEnd;
 
-    let filteredData = storedData.filter(d => {
-        let date = new Date(d.e_startdate);
-        return date.getFullYear() >= start && date.getFullYear() <= end;
-    });
-    let groupedCsvData = d3.group(filteredData, d => d.e_longitude, d => d.e_latitude);
-    return groupedCsvData;
+export function updateTimeInterval(start, end) {
+
+    if (start !== lastStart || end !== lastEnd) {
+        lastStart = start;
+        lastEnd = end;
+        // Execute logic for when start or end has changed
+        let filteredData = storedData.filter(d => {
+            let date = new Date(d.e_startdate);
+            return date.getFullYear() >= start && date.getFullYear() <= end;
+        });
+        let groupedCsvData = d3.group(filteredData, d => d.e_longitude, d => d.e_latitude);
+        return groupedCsvData;
+    } else {
+        return null;
+    }
+//     let filteredData = storedData.filter(d => {
+//         let date = new Date(d.e_startdate);
+//         return date.getFullYear() >= start && date.getFullYear() <= end;
+//     });
+//     let groupedCsvData = d3.group(filteredData, d => d.e_longitude, d => d.e_latitude);
+//     return groupedCsvData;
 }
 
 export function maxYear(csvData) {

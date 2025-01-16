@@ -70,7 +70,14 @@ Make sure you have the following software installed:
    ```bash
    npm start
    ```
-
 4. **Access the application:**
 
    Open your browser and navigate to [http://localhost:8080](http://localhost:8080) to view the application running.
+
+5. **Starting ngrok (for demo only):**
+
+   Open a terminal and start ngrok to run on port 8080 (you may have to change the hostname and host header, based on your own settings):
+
+   ```bash
+   ngrok http 8080 --hostname=mouse-assured-tiger.ngrok-free.app --host-header="localhost:8080"
+   ```

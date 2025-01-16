@@ -1,11 +1,14 @@
 import * as leaflet from 'leaflet';
 import * as d3 from 'd3';
+import * as exhList from './list.js';
+import {getSliderValues} from "./slider";
 
 let map = L.map('map').setView([48.0, 10.0], 3);
 let coords;
+let selectedCircle=[0,0];
 
 
-map.on('zoomend', function() {
+map.on('zoomend', function () {
     // console.log('zoom level: ' + map.getZoom());
     map.eachLayer(function (layer) {
         if (layer instanceof L.Circle) {
@@ -14,7 +17,7 @@ map.on('zoomend', function() {
     });
     renderBubbles();
 });
-map.on('moveend', function() {
+map.on('moveend', function () {
     // console.log('center: ' + map.getCenter());
 });
 
@@ -64,12 +67,13 @@ function renderBubbles() {
         }
     }
 
-    let maxLength = Math.max(...lengths)/2;
-    let minLength = Math.min(...lengths)/2;
+    let maxLength = Math.max(...lengths) / 2;
+    let minLength = Math.min(...lengths) / 2;
 
     var radiusScale = d3.scaleLinear()
         .domain([1, 3000])
         .range([minLength, maxLength]);
+
 
     for (const [key, value] of coords) {
         for (const [key2, value2] of value) {
@@ -77,13 +81,19 @@ function renderBubbles() {
             if (key !== "\\N" && key2 !== "\\N") {
                 let radCoefficient = 256 * Math.pow(2, map.getZoom());
                 var circle = L.circle([key2, key], {
-                    color: 'black',
+                    color: (selectedCircle[0] === key && selectedCircle[1] === key2) ? 'green' : 'black',
                     fillColor: '#296aae',
                     fillOpacity: 0.5,
-                    radius: 5000000*Math.sqrt(radiusScale.invert(value2.length)) / (radCoefficient*0.5),
+                    radius: 5000000 * Math.sqrt(radiusScale.invert(value2.length)) / (radCoefficient * 0.5),
                     id: coords.get(key).get(key2)[0].e_id
                 })
-                circle.bindPopup(coords.get(key).get(key2)[0].e_venue);
+                // circle.bindPopup(coords.get(key).get(key2)[0].e_venue);
+                circle.on('click', function () {
+                    console.log('Circle clicked:', coords.get(key).get(key2)[0].e_id);
+                    exhList.filterData(getSliderValues(), coords.get(key).get(key2));
+                    selectedCircle = [key, key2];
+                    renderBubbles();
+                });
                 let nrOfEvents = coords.get(key).get(key2).length;
                 var z = document.createElement('p'); // is a node
                 z.innerHTML = nrOfEvents + ' results';
@@ -92,5 +102,7 @@ function renderBubbles() {
             }
         }
     }
-
+    //
+    // exhList.setData(coords);
+    // exhList.updateList();
 }
