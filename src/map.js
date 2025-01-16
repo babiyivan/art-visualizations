@@ -6,111 +6,91 @@ let coords;
 
 
 map.on('zoomend', function() {
-    console.log('zoom level: ' + map.getZoom());
+    // console.log('zoom level: ' + map.getZoom());
     map.eachLayer(function (layer) {
         if (layer instanceof L.Circle) {
             map.removeLayer(layer);
         }
     });
-    for (const [key, value] of coords) {
-        // console.log(`key: ${key}, value: ${value}`);
-        // console.log(value);
-        // console.log("count:");
-        // console.log(value.size);
-        for (const [key2, value2] of value) {
-            console.log("key: ");
-            console.log(key);
-            console.log("key2:");
-            console.log(key2);
-            console.log("size: ");
-            console.log(value2.length);
-            if (key !== "\\N" && key2 !== "\\N") {
-                let radCoefficient = 256 * Math.pow(2, map.getZoom());
-                var circle = L.circle([key2, key], {
-                    color: 'red',
-                    fillColor: '#f03',
-                    fillOpacity: 0.5,
-                    radius: 5000000*Math.sqrt(value2.length) / (radCoefficient*0.5)
-
-                }).addTo(map);
-            }
-        }
-    }
+    renderBubbles();
 });
 map.on('moveend', function() {
-    console.log('center: ' + map.getCenter());
+    // console.log('center: ' + map.getCenter());
 });
 
 export function initMap() {
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-    }).addTo(map);
+    var Esri_WorldGrayCanvas = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+        attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
+        maxZoom: 16
+    });
+
+    var CartoDB_Positron = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        subdomains: 'abcd',
+        maxZoom: 20
+    });
+
+    CartoDB_Positron.addTo(map);
+    // L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    //     maxZoom: 19,
+    //     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    // }).addTo(map);
 
 }
 
 
-// export function drawMarkers() {
-//     if(typeof this.coords === 'undefined') {
-//         setTimeout(drawMarkers, 100);
-//         return;
-//     }
-//     // var marker = L.marker([long, lat]).addTo(map);
-//     // var circle = L.circle([long, lat], {
-//     //     color: 'red',
-//     //     fillColor: '#f03',
-//     //     fillOpacity: 0.5,
-//     //     radius: rad*100/map.getZoom()
-//     // }).addTo(map);
-//     for (const [key, value] of coords) {
-//         // console.log(`key: ${key}, value: ${value}`);
-//         // console.log(value);
-//         // console.log("count:");
-//         // console.log(value.size);
-//         for (const [key2, value2] of value) {
-//             console.log("key: ");
-//             console.log(key);
-//             console.log("key2:");
-//             console.log(key2);
-//             console.log("size: ");
-//             console.log(value2.length);
-//             if (key !== "\\N" && key2 !== "\\N") {
-//                 var circle = L.circle([long, lat], {
-//                     color: 'red',
-//                     fillColor: '#f03',
-//                     fillOpacity: 0.5,
-//                     radius: rad*100/map.getZoom()
-//                 }).addTo(map);
-//             }
-//         }
-//     }
-// }
-
-
 export async function saveCoords(input) {
     coords = input;
+    renderBubbles();
+}
+
+export function updateData(newData) {
+    coords = newData;
+    map.eachLayer(function (layer) {
+        if (layer instanceof L.Circle) {
+            map.removeLayer(layer);
+        }
+    });
+    renderBubbles();
+}
+
+function renderBubbles() {
+
+    var lengths = [];
 
     for (const [key, value] of coords) {
-        // console.log(`key: ${key}, value: ${value}`);
-        // console.log(value);
-        // console.log("count:");
-        // console.log(value.size);
         for (const [key2, value2] of value) {
-            console.log("key: ");
-            console.log(key);
-            console.log("key2:");
-            console.log(key2);
-            console.log("size: ");
-            console.log(value2.length);
+            lengths.push(value2.length);
+        }
+    }
+
+    let maxLength = Math.max(...lengths)/2;
+    let minLength = Math.min(...lengths)/2;
+
+    var radiusScale = d3.scaleLinear()
+        .domain([1, 3000])
+        .range([minLength, maxLength]);
+
+    for (const [key, value] of coords) {
+        for (const [key2, value2] of value) {
+
             if (key !== "\\N" && key2 !== "\\N") {
                 let radCoefficient = 256 * Math.pow(2, map.getZoom());
                 var circle = L.circle([key2, key], {
-                    color: 'red',
-                    fillColor: '#f03',
+                    color: 'black',
+                    fillColor: '#296aae',
                     fillOpacity: 0.5,
-                    radius: 5000000*Math.sqrt(value2.length) / (radCoefficient*0.5)
-                }).addTo(map);
+                    radius: 5000000*Math.sqrt(radiusScale.invert(value2.length)) / (radCoefficient*0.5),
+                    id: coords.get(key).get(key2)[0].e_id
+                })
+                circle.bindPopup(coords.get(key).get(key2)[0].e_venue);
+                let nrOfEvents = coords.get(key).get(key2).length;
+                var z = document.createElement('p'); // is a node
+                z.innerHTML = nrOfEvents + ' results';
+                circle.bindTooltip(z);
+                circle.addTo(map);
             }
         }
     }
+
 }

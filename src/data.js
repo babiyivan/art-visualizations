@@ -1,47 +1,39 @@
 import * as d3 from 'd3';
 
+let storedData;
 
-const store = {};
-
-const logData = () => {
-    console.log(store.routes)
+export function storeData(csvData) {
+    storedData = csvData;
 }
-
-export const loadData = () => {
-    return d3.csv('http://localhost:8081/src/data/artvis_dump_NEW.csv')
-        .then((routes) => {
-            store.routes = routes
-            logData();
-
-            return routes;
-        })
-}
-
-export const readData = () => {
-    return loadData()
-}
-
 
 export function minYear(csvData) {
-    console.log("minYear: " + csvData);
+    // console.log("minYear: " + csvData);
     return d3.min(csvData, function (d) {
-        // console.log(new Date(d.a_birthdate));
-        let date = new Date(d.a_birthdate);
+        let date = new Date(d.e_startdate);
         if (date.getFullYear() == 0) {
             return null;
         }
-        return new Date(d.a_birthdate);
+        return date.getFullYear();
     });
 }
 
+export function updateTimeInterval(start, end)    {
+
+    let filteredData = storedData.filter(d => {
+        let date = new Date(d.e_startdate);
+        return date.getFullYear() >= start && date.getFullYear() <= end;
+    });
+    let groupedCsvData = d3.group(filteredData, d => d.e_longitude, d => d.e_latitude);
+    return groupedCsvData;
+}
+
 export function maxYear(csvData) {
-    console.log("maxYear: " + csvData);
+    // console.log("maxYear: " + csvData);
     return d3.max(csvData, function (d) {
-        // console.log(new Date(d.a_birthdate));
-        let date = new Date(d.a_birthdate);
+        let date = new Date(d.e_startdate);
         if (date.getFullYear() == 0) {
             return null;
         }
-        return new Date(d.a_birthdate);
+        return date.getFullYear();
     });
 }
