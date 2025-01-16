@@ -30,7 +30,7 @@ export function filterData(sliderValues, filteredData) {
 
     savedData = flattenedData;
 
-   renderList(flattenedData)
+    renderList(flattenedData)
 }
 
 
@@ -67,25 +67,39 @@ function renderList(data) {
 
 
     let dataChunk = data.slice(0, 150);
-    const listItem = listContainer
-        .selectAll('li')
-        .data(dataChunk)
-        .join(
-            enter => enter.append('li')
-                .attr('class', 'list-group-item list-group-item-action')
-        );
-    listItem
-        .append('div')
-        .attr('class', 'd-flex w-100 justify-content-between')
-        .append('h5')
-        .attr('class', 'mb-1')
-        .text(d => `${d.a_lastname}, ${d.a_firstname}`);
-    listItem
-        .append('div')
-        .attr('class', 'mb-1')
-        .append('small')
-        .html(d => `${d.e_title} <b>(${d.e_startdate})</b> at ${d.e_venue}`);
-}
+    try {
+        let eCity = dataChunk[0].e_city;
+        d3.select('#list-header')
+            .text('List of artists in ' + eCity);
+    } catch (e) {
+        d3.select('#list-header')
+            .text('List of artists');
+    }
+
+        const listItem = listContainer
+            .selectAll('li')
+            .data(dataChunk)
+            .join(
+                enter => enter.append('li')
+                    .attr('class', 'list-group-item list-group-item-action')
+            );
+        listItem
+            .append('div')
+            .attr('class', 'd-flex w-100 justify-content-between')
+            .append('h5')
+            .attr('class', 'mb-1')
+            .text(d => `${d.a_lastname}, ${d.a_firstname}`);
+        listItem
+            .append('div')
+            .attr('class', 'mb-1')
+            .append('small')
+            .html(d => `${d.e_title} <b>(${d.e_startdate})</b> at ${d.e_venue}`);
+        listItem
+            .append('div')
+            .attr('class', 'mb-1')
+            .append('small')
+            .html(d => `Number of artworks exhibited: <b>${d.e_paintings}</b> `);
+    }
 
 
 

@@ -59,6 +59,15 @@ export function updateData(newData) {
 
 function renderBubbles() {
 
+    if (selectedCircle[0] === 0 ) {
+        let exhibitionContainer = d3.select('.exhibition-list-container')
+        exhibitionContainer.selectAll('*').remove();
+        exhibitionContainer
+            .append('p')
+            .attr('class', 'text-muted small')
+            .text('To see the results, select a data point on the map above');
+    }
+
     var lengths = [];
 
     for (const [key, value] of coords) {
@@ -89,10 +98,15 @@ function renderBubbles() {
                 })
                 // circle.bindPopup(coords.get(key).get(key2)[0].e_venue);
                 circle.on('click', function () {
+                    selectedCircle = [key, key2];
+                    map.eachLayer(function (layer) {
+                        if (layer instanceof L.Circle) {
+                            map.removeLayer(layer);
+                        }
+                    });
+                    renderBubbles();
                     console.log('Circle clicked:', coords.get(key).get(key2)[0].e_id);
                     exhList.filterData(getSliderValues(), coords.get(key).get(key2));
-                    selectedCircle = [key, key2];
-                    renderBubbles();
                 });
                 let nrOfEvents = coords.get(key).get(key2).length;
                 var z = document.createElement('p'); // is a node
