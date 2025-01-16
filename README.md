@@ -25,7 +25,7 @@ Make sure you have the following software installed:
    Open a terminal and clone the repository to your local machine:
 
    ```bash
-   git clone https://github.com/yourusername/ArtVis.git
+   git clone https://github.com/AhmedSabanovic/ArtVis.git
    ```
 
 2. **Navigate into the project directory:**
