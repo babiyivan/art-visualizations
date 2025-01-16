@@ -1,4 +1,3 @@
-// filepath: /c:/Users/ahmed/Desktop/ArtVis-main/dist/network.js
 async function createNetwork() {
     try {
         // Initial setup
