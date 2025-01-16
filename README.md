@@ -6,6 +6,11 @@ ArtVis is a project designed to visualize and interact with art-related data. Th
 
 Follow these steps to set up and run the ArtVis project locally.
 
+### Accessing the demo deployment
+
+You can access the demo on ngrok of our ArtVis project at https://mouse-assured-tiger.ngrok-free.app/.
+In case there are technical issues with it, please follow the steps below.
+
 ### Prerequisites
 
 Make sure you have the following software installed:
