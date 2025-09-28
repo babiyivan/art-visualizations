@@ -11,25 +11,23 @@
 <p align="center"><em>Network visualization of artist relationships.</em></p>
 
 
-## Project Overview
-- Interactive exploration of roughly 14k modernist art exhibitions (1905-1915) sourced from the ArtVis dataset.
-- Focuses on revealing where and when artists exhibited, gender representation, and how venues connected artists across Europe and beyond.
+## Overview
+Interactive exploration of roughly 14k modernist art exhibitions (1905-1915) sourced from the ArtVis dataset. Insights on where and when artists exhibited and how venues connected artists across Europe and beyond.
 
 ## Visual Features
 - **Map view:** Leaflet-powered bubble map with a dual-handle year slider, highlighting exhibition hotspots and surfacing up to 150 detailed records per location.
 - **Artist network:** D3 force-directed graph that links artists who shared venues, filterable by exhibition year and artist nationality.
 - **At-a-glance feedback:** Contextual list and tooltips update live so users can compare places and collaborations without leaving the page.
 
-## Dataset Notes
-- Core fields include artist demographics, exhibition metadata, geocoordinates, and counts of exhibited works.
-- Cleaning addressed incomplete birth/death dates, missing coordinates, and sparse categorical values to keep interactions responsive.
+## Dataset
+Core fields include artist demographics, exhibition metadata, geocoordinates, and counts of exhibited works. Data pre-processing and cleaning addressed incomplete birth/death dates, missing coordinates, and sparse categorical values to keep interactions responsive.
 
 ## Repository Layout
 - `src/`: source modules for the map, slider, data utilities, and network logic.
 - `dist/`: built HTML/JS assets for quick demos.
-- `data/`: cleaned CSV plus notebook used for preprocessing.
+- `data/`: cleaned CSV files.
 - `docs/`: full project reports that document analysis decisions.
-- `notebooks/`: exploratory data analysis in Jupyter format.
+- `notebooks/`: exploratory data analysis and data pre-processing in Jupyter format.
 
 ## Getting Started
 
