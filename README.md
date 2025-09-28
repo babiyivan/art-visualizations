@@ -1,5 +1,16 @@
 # ArtVis
 
+<p align="center">
+  <img src="docs/images/screenshot1.png" alt="Map overview" width="49%" />
+  <img src="docs/images/screenshot2.png" alt="Slider detail" width="49%" />
+</p>
+<p align="center"><em>Map with changed range of time using double range slider.</em></p>
+<p align="center">
+  <img src="docs/images/screenshot3.png" alt="Network visualization of artist relationships." width="70%" />
+</p>
+<p align="center"><em>Network visualization of artist relationships.</em></p>
+
+
 ## Project Overview
 - Interactive exploration of roughly 14k modernist art exhibitions (1905-1915) sourced from the ArtVis dataset.
 - Focuses on revealing where and when artists exhibited, gender representation, and how venues connected artists across Europe and beyond.
