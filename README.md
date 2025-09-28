@@ -1,10 +1,28 @@
 # ArtVis
 
-ArtVis is a project designed to visualize and interact with art-related data. This guide will walk you through the steps to set up and run ArtVis on your local machine.
+## Project Overview
+- Interactive exploration of roughly 14k modernist art exhibitions (1905-1915) sourced from the ArtVis dataset.
+- Focuses on revealing where and when artists exhibited, gender representation, and how venues connected artists across Europe and beyond.
+
+## Visual Features
+- **Map view:** Leaflet-powered bubble map with a dual-handle year slider, highlighting exhibition hotspots and surfacing up to 150 detailed records per location.
+- **Artist network:** D3 force-directed graph that links artists who shared venues, filterable by exhibition year and artist nationality.
+- **At-a-glance feedback:** Contextual list and tooltips update live so users can compare places and collaborations without leaving the page.
+
+## Dataset Notes
+- Core fields include artist demographics, exhibition metadata, geocoordinates, and counts of exhibited works.
+- Cleaning addressed incomplete birth/death dates, missing coordinates, and sparse categorical values to keep interactions responsive.
+
+## Repository Layout
+- `src/`: source modules for the map, slider, data utilities, and network logic.
+- `dist/`: built HTML/JS assets for quick demos.
+- `data/`: cleaned CSV plus notebook used for preprocessing.
+- `docs/`: full project reports that document analysis decisions.
+- `notebooks/`: exploratory data analysis in Jupyter format.
 
 ## Getting Started
 
-Follow these steps to set up and run the ArtVis project locally.
+This guide will walk you through the steps to set up and run ArtVis. Follow these steps to set up and run the ArtVis project locally.
 
 ### Accessing the demo deployment
 
@@ -86,3 +104,7 @@ Make sure you have the following software installed:
    ```bash
    ngrok http 8080 --hostname=mouse-assured-tiger.ngrok-free.app --host-header="localhost:8080"
    ```
+
+## Further Reading
+- `docs/report1.pdf`: deep dive into exploratory analysis, data quality, and design rationale.
+- `docs/report2.pdf`: assignment write-up detailing user tasks, interaction design, and implementation notes.
